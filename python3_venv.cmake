@@ -15,7 +15,7 @@ function (evc_assert_python_venv)
 
     if (CREATE_VENV_RETURN_CODE)
         execute_process(
-            COMMAND ${CMAKE_COMMAND} "-E" "remove_directory" ${PROJECT_BINARY_DIR}
+            COMMAND ${CMAKE_COMMAND} "-E" "remove_directory" "${PROJECT_BINARY_DIR}/.venv"
         )
         message(FATAL_ERROR "Failed to set up python virtual environment.  See above for diagnostics!")
     endif()
