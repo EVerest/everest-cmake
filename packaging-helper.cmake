@@ -4,7 +4,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 function(evc_get_main_project_flag RETVAL)
-    get_directory_property(_HAS_PARENT PARENT_DIRECTORY)
+    get_directory_property(_HAS_PARENT ${PROJECT_SOURCE_DIR})
     if(_HAS_PARENT)
         set(${RETVAL} FALSE PARENT_SCOPE)
     else()

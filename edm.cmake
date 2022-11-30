@@ -1,9 +1,39 @@
-function (evc_setup_edm)
-    find_program(EVEREST_DEPENDENCY_MANAGER "edm")
+function (_evc_install_edm)
+    include (FetchContent)
+
+    FetchContent_Declare(
+        everest-edm
+        GIT_REPOSITORY https://github.com/EVerest/everest-dev-environment
+        # NOTE: still using an older version here, because it is much faster
+        GIT_TAG        deca310febcf1c2dad05f042d8a8ce0df2a312de
+    )
+
+    FetchContent_Populate(everest-edm)
+
+    execute_process(
+        COMMAND ${PYTHON3_VENV_EXECUTABLE} -m pip install ${everest-edm_SOURCE_DIR}/dependency_manager
+    )
+
+    find_program(EVEREST_DEPENDENCY_MANAGER edm
+        PATHS "${PYTHON3_VENV_DIR}/bin"
+        NO_SYSTEM_ENVIRONMENT_PATH
+    )
 
     if(NOT EVEREST_DEPENDENCY_MANAGER)
         message(FATAL_ERROR "Could not find EVerest dependency manager. Please make it available in your PATH.")
     endif()
+
+endfunction ()
+
+function (evc_setup_edm)
+    # NOTE: by setting EVEREST_DEPENDENCY_MANAGER on the cmake configure line,
+    #       a different binary can be used
+    if (NOT EVEREST_DEPENDENCY_MANAGER)
+        evc_assert_python_venv()
+
+        _evc_install_edm()
+
+    endif ()
 
     execute_process(
         COMMAND "${EVEREST_DEPENDENCY_MANAGER}"

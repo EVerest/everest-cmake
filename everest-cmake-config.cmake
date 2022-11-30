@@ -1,3 +1,5 @@
+set(_EVC_CURRENT_LIST_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE INTERNAL "")
+
 include("${CMAKE_CURRENT_LIST_DIR}/packaging-helper.cmake")
 
 # set global variable to tell depending project if it is the main
@@ -21,8 +23,10 @@ if (everest_cmake_FOUND)
 	return()
 endif()
 
+include("${CMAKE_CURRENT_LIST_DIR}/python3_venv.cmake")
+
 include("${CMAKE_CURRENT_LIST_DIR}/edm.cmake")
 
 macro (evc_include FILE)
-	include("${everest-cmake_DIR}/3rd_party/${FILE}.cmake")
+	include("${_EVC_CURRENT_LIST_DIR}/3rd_party/${FILE}.cmake")
 endmacro()
