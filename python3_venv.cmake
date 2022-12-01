@@ -21,6 +21,7 @@ function (evc_assert_python_venv)
 
     set (PYTHON3_VENV_EXECUTABLE "${PYTHON3_VENV_DIR}/bin/python3" CACHE FILEPATH "Python3 venv interpreter")
     if (NOT EXISTS ${PYTHON3_VENV_EXECUTABLE})
+        unset (PYTHON3_VENV_EXECUTABLE CACHE)
         message(FATAL_ERROR
 "Could not find python3 interpreter in virtual environment at \
 ${PYTHON3_VENV_EXECUTABLE}.  Try to remove ${PYTHON3_VENV_DIR} and run \
