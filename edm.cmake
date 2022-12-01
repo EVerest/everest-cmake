@@ -10,6 +10,7 @@ function (_evc_install_edm)
 
     FetchContent_Populate(everest-edm)
 
+    message(STATUS "Installing edm to python venv")
     execute_process(
         COMMAND ${PYTHON3_VENV_EXECUTABLE} -m pip install ${everest-edm_SOURCE_DIR}/dependency_manager
     )

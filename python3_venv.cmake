@@ -6,6 +6,7 @@ function (evc_assert_python_venv)
     find_package (Python3 COMPONENTS Interpreter)
 
     if (NOT IS_DIRECTORY ${PYTHON3_VENV_DIR})
+        message(STATUS "Setting up python venv at ${PYTHON3_VENV_DIR})
         execute_process (
             COMMAND "${Python3_EXECUTABLE}" -m venv ${PYTHON3_VENV_DIR}
             RESULT_VARIABLE CREATE_VENV_RETURN_CODE
