@@ -283,17 +283,18 @@ function(setup_target_for_coverage_lcov)
         ${LCOV_PATH} ${Coverage_LCOV_ARGS} --gcov-tool ${GCOV_PATH} --directory . -b
         ${BASEDIR} --capture --output-file ${Coverage_NAME}.capture
     )
+    get_filename_component(ABSOLUTE_PATH_TOTAL_FILE ${Coverage_NAME}.total ABSOLUTE)
     # add baseline counters
     set(LCOV_BASELINE_COUNT_CMD
         ${LCOV_PATH} ${Coverage_LCOV_ARGS} --gcov-tool ${GCOV_PATH} -a ${Coverage_NAME}.base
-        -a ${Coverage_NAME}.capture --output-file ${Coverage_NAME}.total
+        -a ${Coverage_NAME}.capture --output-file ${ABSOLUTE_PATH_TOTAL_FILE}
     )
+    get_filename_component(ABSOLUTE_PATH_INFO_FILE ${Coverage_NAME}.info ABSOLUTE)
     # filter collected data to final coverage report
     set(LCOV_FILTER_CMD
         ${LCOV_PATH} ${Coverage_LCOV_ARGS} --gcov-tool ${GCOV_PATH} --remove
-        ${Coverage_NAME}.total ${LCOV_EXCLUDES} --output-file ${Coverage_NAME}.info
+        ${ABSOLUTE_PATH_TOTAL_FILE} ${LCOV_EXCLUDES} --output-file ${ABSOLUTE_PATH_INFO_FILE}
     )
-    get_filename_component(ABSOLUTE_PATH_INFO_FILE ${Coverage_NAME}.info ABSOLUTE)
     # Generate HTML output
     set(LCOV_GEN_HTML_CMD
         ${GENHTML_PATH} ${GENHTML_EXTRA_ARGS} ${Coverage_GENHTML_ARGS} -o
