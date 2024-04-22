@@ -1,4 +1,3 @@
-
 set(EVEREST_VERSION_INFORMATION_HEADER_IN "${CMAKE_CURRENT_LIST_DIR}/assets/version_information.hpp.in")
 set(EVEREST_VERSION_INFORMATION_TXT_IN "${CMAKE_CURRENT_LIST_DIR}/assets/version_information.txt.in")
 
