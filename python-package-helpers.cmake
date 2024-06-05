@@ -8,7 +8,7 @@ function (ev_create_pip_install_dist_target)
     )
 
     add_custom_target(${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME}_pip_install_dist
-        # Remove buil dir from pip
+        # Remove build dir from pip
         COMMAND
             ${CMAKE_COMMAND} -E remove_directory build
         COMMAND
@@ -32,7 +32,7 @@ function (ev_create_pip_install_local_target)
     )
 
     add_custom_target(${EV_CREATE_PIP_INSTALL_LOCAL_TARGET_PACKAGE_NAME}_pip_install_local
-        # Remove buil dir from pip
+        # Remove build dir from pip
         COMMAND
             ${CMAKE_COMMAND} -E remove_directory build
         COMMAND
@@ -85,7 +85,7 @@ function (ev_create_python_wheel_targets)
 
     set(WHEEL_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/dist)
     add_custom_target(${EV_CREATE_PYTHON_WHEEL_TARGETS_PACKAGE_NAME}_build_wheel
-        # Remove buil dir from pip
+        # Remove build dir from pip
         COMMAND
             ${CMAKE_COMMAND} -E remove_directory build
         COMMAND
