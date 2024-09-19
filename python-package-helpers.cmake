@@ -20,12 +20,22 @@ function (ev_create_pip_install_dist_target)
         set(EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
 
-    set(CHECK_DONE_FILE "${CMAKE_BINARY_DIR}/${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME}_pip_install_dist_installed")
+    execute_process(
+        COMMAND
+            ${Python3_EXECUTABLE} -c "from setuptools import setup; setup()" --version
+        WORKING_DIRECTORY
+            ${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_SOURCE_DIRECTORY}
+        OUTPUT_VARIABLE
+            EV_CREATE_PIP_INSTALL_DIST_TARGET_INSTALLED_PACKAGE_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    set(CHECK_DONE_FILE "${CMAKE_BINARY_DIR}/${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME}_pip_install_dist_installed_${EV_CREATE_PIP_INSTALL_DIST_TARGET_INSTALLED_PACKAGE_VERSION}")
     add_custom_command(
         OUTPUT
             "${CHECK_DONE_FILE}"
         COMMENT
-            "Installing ${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME} from distribution"
+            "Installing ${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME} from distribution, version: ${EV_CREATE_PIP_INSTALL_DIST_TARGET_INSTALLED_PACKAGE_VERSION}"
         WORKING_DIRECTORY
             ${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_SOURCE_DIRECTORY}
         # Remove build dir from pip
