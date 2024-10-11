@@ -188,7 +188,7 @@ endmacro()
 
 
 function(ev_pip_install_local)
-set(oneValueArgs
+    set(oneValueArgs
         PACKAGE_NAME
         PACKAGE_SOURCE_DIRECTORY
     )
