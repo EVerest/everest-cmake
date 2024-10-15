@@ -37,11 +37,16 @@ function (ev_create_pip_install_dist_target)
             ${CMAKE_COMMAND} -E touch "${CHECK_DONE_FILE}"
     )
 
-    add_custom_target(${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME}_pip_install_dist
+    set(TARGET_NAME "${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_NAME}_pip_install_dist")
+    add_custom_target(${TARGET_NAME}
         DEPENDS
             "${CHECK_DONE_FILE}"
         DEPENDS
             ${EV_CREATE_PIP_INSTALL_DIST_TARGET_DEPENDS}
+    )
+    set_target_properties(${TARGET_NAME}
+        PROPERTIES
+            PACKAGE_SOURCE_DIRECTORY "${EV_CREATE_PIP_INSTALL_DIST_TARGET_PACKAGE_SOURCE_DIRECTORY}"
     )
 endfunction()
 
@@ -67,7 +72,8 @@ function (ev_create_pip_install_local_target)
         set(EV_CREATE_PIP_INSTALL_LOCAL_TARGET_PACKAGE_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
 
-    add_custom_target(${EV_CREATE_PIP_INSTALL_LOCAL_TARGET_PACKAGE_NAME}_pip_install_local
+    set(TARGET_NAME "${EV_CREATE_PIP_INSTALL_LOCAL_TARGET_PACKAGE_NAME}_pip_install_local")
+    add_custom_target(${TARGET_NAME}
         # Remove build dir from pip
         COMMAND
             ${CMAKE_COMMAND} -E remove_directory build
@@ -79,6 +85,10 @@ function (ev_create_pip_install_local_target)
             ${EV_CREATE_PIP_INSTALL_LOCAL_TARGET_DEPENDS}
         COMMENT
             "Installing ${EV_CREATE_PIP_INSTALL_LOCAL_TARGET_PACKAGE_NAME} via user-mode from build"
+    )
+    set_target_properties(${TARGET_NAME}
+        PROPERTIES
+            PACKAGE_SOURCE_DIRECTORY "${EV_CREATE_PIP_INSTALL_LOCAL_TARGET_PACKAGE_SOURCE_DIRECTORY}"
     )
 endfunction()
 
