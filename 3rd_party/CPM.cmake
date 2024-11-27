@@ -1076,6 +1076,7 @@ function(
     endif()
     set(CPM_OLD_INDENT "${CPM_INDENT}")
     set(CPM_INDENT "${CPM_INDENT} ${PACKAGE}:")
+    unset(${PACKAGE}_SOURCE_DIR)
     add_subdirectory(${SOURCE_DIR} ${BINARY_DIR} ${addSubdirectoryExtraArgs})
     set(CPM_INDENT "${CPM_OLD_INDENT}")
   endif()
