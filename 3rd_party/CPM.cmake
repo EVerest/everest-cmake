@@ -880,7 +880,7 @@ function(CPMAddPackage)
       if(DEFINED CPM_ARGS_SOURCE_SUBDIR)
         list(APPEND fetchContentDeclareExtraArgs SOURCE_SUBDIR ${CPM_ARGS_SOURCE_SUBDIR})
       endif()
-      # For CMake version <3.28 OPTIONS are parsed in cpm_add_subdirectory
+      # For CMake version <3.30.3 OPTIONS are parsed in cpm_add_subdirectory
       if(CPM_ARGS_OPTIONS AND NOT DOWNLOAD_ONLY)
         foreach(OPTION ${CPM_ARGS_OPTIONS})
           cpm_parse_option("${OPTION}")
