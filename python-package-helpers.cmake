@@ -75,6 +75,37 @@ function(ev_install_pip_package)
     )
 endfunction()
 
+function(ev_get_python_package_version)
+    set(oneValueArgs
+        PACKAGE_SOURCE_DIRECTORY
+        VERSION_OUTPUT
+    )
+    cmake_parse_arguments(
+        "arg"
+        ""
+        "${oneValueArgs}"
+        ""
+        ${ARGN}
+    )
+    if("${arg_PACKAGE_SOURCE_DIRECTORY}" STREQUAL "")
+        message(FATAL_ERROR "PACKAGE_SOURCE_DIRECTORY is required")
+    endif()
+
+    execute_process(
+        COMMAND
+            ${Python3_EXECUTABLE} -c "from setuptools import setup; setup()" --version
+        WORKING_DIRECTORY
+            ${arg_PACKAGE_SOURCE_DIRECTORY}
+        OUTPUT_VARIABLE
+            PACKAGE_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    string(REGEX MATCH "^[0-9]+\\.[0-9]+(\\.[0-9]+)?" "PACKAGE_VERSION" "${PACKAGE_VERSION}")
+
+    set("${arg_VERSION_OUTPUT}" "${PACKAGE_VERSION}" PARENT_SCOPE)
+endfunction()
+
 function(ev_create_pip_install_dist_target)
     set(oneValueArgs
         PACKAGE_NAME
@@ -100,14 +131,11 @@ function(ev_create_pip_install_dist_target)
         message(STATUS "ev_create_pip_install_dist_target: no PACKAGE_SOURCE_DIRECTORY provided, using: ${arg_PACKAGE_SOURCE_DIRECTORY}")
     endif()
 
-    execute_process(
-        COMMAND
-            ${Python3_EXECUTABLE} -c "from setuptools import setup; setup()" --version
-        WORKING_DIRECTORY
+    ev_get_python_package_version(
+        PACKAGE_SOURCE_DIRECTORY
             ${arg_PACKAGE_SOURCE_DIRECTORY}
-        OUTPUT_VARIABLE
-            PACKAGE_VERSION
-        OUTPUT_STRIP_TRAILING_WHITESPACE
+        VERSION_OUTPUT
+            "PACKAGE_VERSION"
     )
 
     set(CHECK_DONE_FILE "${CMAKE_BINARY_DIR}/${arg_PACKAGE_NAME}_pip_install_dist_installed_${PACKAGE_VERSION}")
