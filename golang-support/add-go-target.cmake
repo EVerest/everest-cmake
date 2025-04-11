@@ -1,5 +1,14 @@
 include_guard(GLOBAL)
 
+# This function adds a custom target to build a Go package.
+# It takes the following arguments:
+# - NAME: The name of the custom target
+# - OUTPUT: The output files of the Go package
+# - GO_PACKAGE_SOURCE_PATH: The path to the Go package source
+# - OUTPUT_DIRECTORY: The directory where the output file will be placed
+# - WORKING_DIRECTORY: The working directory for the Go command
+# - DEPENDS: The dependencies of the Go package
+# - COMMENT: The comment to display when building the target
 function(add_go_target)
     set(options)
     set(oneValueArgs
@@ -65,6 +74,10 @@ function(add_go_target)
         message(FATAL_ERROR "NAME not set")
     endif()
 
+    if(NOT _GO_SETUP_DONE)
+        message(FATAL_ERROR "setup_go must be called before add_go_target")
+    endif()
+
     if (NOT arg_COMMENT)
         set(arg_COMMENT "Building ${arg_GO_PACKAGE_SOURCE_PATH}")
     endif()
@@ -73,7 +86,7 @@ function(add_go_target)
         OUTPUT
             ${arg_OUTPUT}
         COMMAND
-            GOBIN=${arg_OUTPUT_DIRECTORY} go install ${arg_GO_PACKAGE_SOURCE_PATH}
+            GOBIN=${arg_OUTPUT_DIRECTORY} ${GO_EXECUTABLE} install ${arg_GO_PACKAGE_SOURCE_PATH}
         COMMENT
             ${arg_COMMENT}
         WORKING_DIRECTORY
