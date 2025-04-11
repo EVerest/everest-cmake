@@ -1,5 +1,16 @@
 include_guard(GLOBAL)
 
+# This function generates Python code from proto files.
+#
+# The function requires the setup_grpc_generator function to be called before.
+# The function will generate the standard protobuf python files
+# and the standard grpc python files.
+#
+# PROTOBUF_DIR: The directory containing the proto files
+# OUT_FILES_VAR: The variable to store the generated files as a list
+# OUT_DIR: The directory to store the generated files
+# TARGET_NAME: The name of the custom target to generate the files
+# PROTO_FILES: The list of proto files to generate the files from
 function(generate_py_from_proto)
     set(options)
     set(oneValueArgs
