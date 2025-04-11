@@ -30,3 +30,5 @@ macro (evc_include FILE)
 endmacro()
 
 include("${CMAKE_CURRENT_LIST_DIR}/version-information.cmake")
+
+include("${CMAKE_CURRENT_LIST_DIR}/golang-support/add-go-target.cmake")
