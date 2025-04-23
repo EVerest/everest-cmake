@@ -62,6 +62,9 @@ endmacro()
 # fail as non-EDM installation of gRPC generator is not
 # supported at the moment.
 macro(setup_grpc_generator)
+    if (NOT _GRPC_SETUP_DONE)
+        message(FATAL_ERROR "setup_grpc must be called before setup_grpc_generator")
+    endif()
     if (GRPC_GENERATOR_EDM)
         if (DISABLE_EDM)
             message(FATAL_ERROR "EDM is disabled, but GRPC_GENERATOR_EDM is set to true")
@@ -69,11 +72,6 @@ macro(setup_grpc_generator)
         if (NOT GRPC_EDM)
             message(FATAL_ERROR "GRPC_EDM is set to false, but GRPC_GENERATOR_EDM is set to true")
         endif()
-
-        if (NOT _GRPC_SETUP_DONE)
-            message(FATAL_ERROR "setup_grpc must be called before setup_grpc_generator")
-        endif()
-
         if (NOT grpc-extended-cpp-plugin_SOURCE_DIR)
             message(FATAL_ERROR "grpc-extended-cpp-plugin_SOURCE_DIR not set, is the grpc-extended-cpp-plugin repository added in the dependencies.yaml?")
         endif()
@@ -93,7 +91,19 @@ macro(setup_grpc_generator)
             protobuf::protoc
         )
     else()
-        message(FATAL_ERROR "Non-EDM installation of gRPC generator is not supported at the moment")
+        if (GRPC_EDM)
+            message(FATAL_ERROR "GRPC_EDM is set to true, but GRPC_GENERATOR_EDM is set to false")
+        endif()
+        find_program(GRPC_EXTENDED_CPP_PLUGIN_BINARY_PATH
+            REQUIRED
+            NAMES
+                grpc_extended_cpp_plugin
+        )
+        find_program(PROTOBUF_PROTOC_BINARY_PATH
+            REQUIRED
+            NAMES
+                protoc
+        )
     endif()
 
     _setup_python_generator()
