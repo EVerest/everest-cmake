@@ -1,6 +1,6 @@
 include_guard(GLOBAL)
 
-option(GRPC_EDM "Enable EDM for gRPC" ON)
+option(GRPC_EDM "Enable EDM for gRPC" OFF)
 
 # This macro sets up gRPC for the project. It will check
 # if the GRPC_EDM installation is enabled and if so, it
