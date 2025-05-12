@@ -2,7 +2,7 @@ include_guard(GLOBAL)
 
 include(${CMAKE_CURRENT_LIST_DIR}/setup-grpc.cmake)
 
-option(GRPC_GENERATOR_EDM "Enable EDM installation for gRPC generator" ON)
+option(GRPC_GENERATOR_EDM "Enable EDM installation for gRPC generator" OFF)
 
 # This function checks if the required pip PACKAGES are installed
 # on the system. If not, it will fail.
