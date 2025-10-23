@@ -33,3 +33,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/version-information.cmake")
 
 include("${CMAKE_CURRENT_LIST_DIR}/golang-support/add-go-target.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/golang-support/setup-go.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/protobuf-helpers/setup-grpc.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/protobuf-helpers/setup-generator.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/protobuf-helpers/generate-cpp.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/protobuf-helpers/generate-python.cmake")
