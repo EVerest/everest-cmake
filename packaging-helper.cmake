@@ -41,6 +41,12 @@ function(_parse_path_vars PATH_VARS PATH_VARS_ARG INLINE_CONTENT ERROR)
 endfunction()
 
 function(evc_setup_package)
+    # The aggregate everest-core package provides the shared export in a
+    # complete core build; component package files are standalone-only.
+    if (EVEREST_CORE_BUILD)
+        return()
+    endif()
+
     #
     # handle passed arguments
     #
