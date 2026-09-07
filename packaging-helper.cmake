@@ -127,10 +127,10 @@ function(evc_setup_package)
     else()
         string(CONCAT DEFAULT_PACKAGE_CONFIG_CONTENT
             "@PACKAGE_INIT@\n\n"
-            "include(\${CMAKE_CURRENT_LIST_DIR}/${LIBRARY_PACKAGE_NAME}-targets.cmake)\n\n"
             "include(CMakeFindDependencyMacro)\n"
             "${INLINE_CONTENT}"
             "${CONFIG_ADDITIONAL_CONTENT}\n"
+            "include(\${CMAKE_CURRENT_LIST_DIR}/${LIBRARY_PACKAGE_NAME}-targets.cmake)\n\n"
             "check_required_components(${LIBRARY_PACKAGE_NAME})\n"
         )
         file(WRITE ${PACKAGE_CONFIG_IN_FILE} ${DEFAULT_PACKAGE_CONFIG_CONTENT})
