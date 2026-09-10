@@ -41,6 +41,12 @@ function(_parse_path_vars PATH_VARS PATH_VARS_ARG INLINE_CONTENT ERROR)
 endfunction()
 
 function(evc_setup_package)
+    # The aggregate everest-core package provides the shared export in a
+    # complete core build; component package files are standalone-only.
+    if (EVEREST_CORE_BUILD)
+        return()
+    endif()
+
     #
     # handle passed arguments
     #
@@ -127,10 +133,10 @@ function(evc_setup_package)
     else()
         string(CONCAT DEFAULT_PACKAGE_CONFIG_CONTENT
             "@PACKAGE_INIT@\n\n"
-            "include(\${CMAKE_CURRENT_LIST_DIR}/${LIBRARY_PACKAGE_NAME}-targets.cmake)\n\n"
             "include(CMakeFindDependencyMacro)\n"
             "${INLINE_CONTENT}"
             "${CONFIG_ADDITIONAL_CONTENT}\n"
+            "include(\${CMAKE_CURRENT_LIST_DIR}/${LIBRARY_PACKAGE_NAME}-targets.cmake)\n\n"
             "check_required_components(${LIBRARY_PACKAGE_NAME})\n"
         )
         file(WRITE ${PACKAGE_CONFIG_IN_FILE} ${DEFAULT_PACKAGE_CONFIG_CONTENT})
