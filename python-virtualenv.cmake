@@ -1,7 +1,7 @@
 macro(ev_create_python_venv)
     cmake_parse_arguments(
         "EV_CREATE_PYTHON_VENV"
-        "INCLUDE_SYSTEM_SITE_PACKAGES"
+        ""
         "PATH_TO_VENV"
         ""
         ${ARGN}
@@ -19,13 +19,9 @@ macro(ev_create_python_venv)
             Interpreter
             Development
     )
-    set(EV_CREATE_PYTHON_VENV_SYSTEM_SITE_PACKAGES_FLAG "")
-    if(${EV_CREATE_PYTHON_VENV_INCLUDE_SYSTEM_SITE_PACKAGES})
-        set(EV_CREATE_PYTHON_VENV_SYSTEM_SITE_PACKAGES_FLAG "--system-site-packages")
-    endif()
     execute_process(
         COMMAND
-            ${Python3_EXECUTABLE} -m venv ${EV_CREATE_PYTHON_VENV_SYSTEM_SITE_PACKAGES_FLAG} ${EV_CREATE_PYTHON_VENV_PATH_TO_VENV}
+            ${Python3_EXECUTABLE} -m venv ${EV_CREATE_PYTHON_VENV_PATH_TO_VENV}
         RESULT_VARIABLE EV_CREATE_PYTHON_VENV_RESULT
     )
     if(${EV_CREATE_PYTHON_VENV_RESULT} AND NOT ${EV_CREATE_PYTHON_VENV_RESULT} EQUAL 0)
@@ -137,7 +133,6 @@ macro(ev_setup_python_executable)
             ev_create_python_venv(
                 PATH_TO_VENV
                     "${EV_SETUP_PYTHON_EXECUTABLE_PYTHON_VENV_PATH}"
-                INCLUDE_SYSTEM_SITE_PACKAGES
             )
         endif()
         ev_activate_python_venv(PATH_TO_VENV "${EV_SETUP_PYTHON_EXECUTABLE_PYTHON_VENV_PATH}")
