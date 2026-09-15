@@ -312,6 +312,9 @@ macro(ev_setup_cmake_variables_python_wheel)
 endmacro()
 
 function(ev_pip_install_local)
+    set(options
+        FORCE
+    )
     set(oneValueArgs
         PACKAGE_NAME
         PACKAGE_SOURCE_DIRECTORY
@@ -321,7 +324,7 @@ function(ev_pip_install_local)
     )
     cmake_parse_arguments(
         "EV_PIP_INSTALL_LOCAL"
-        ""
+        "${options}"
         "${oneValueArgs}"
         "${multiValueArgs}"
         ${ARGN}
@@ -345,13 +348,22 @@ function(ev_pip_install_local)
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
+    # keep only the last line, setuptools may print discovery output before the version
+    string(REGEX REPLACE "^.*\n" ""
+        EV_PIP_INSTALL_LOCAL_INSTALLED_PACKAGE_VERSION
+        "${EV_PIP_INSTALL_LOCAL_INSTALLED_PACKAGE_VERSION}")
+
     set(CHECK_DONE_FILE "${CMAKE_BINARY_DIR}/${EV_PIP_INSTALL_LOCAL_PACKAGE_NAME}_pip_install_local_installed_${EV_PIP_INSTALL_LOCAL_INSTALLED_PACKAGE_VERSION}")
 
     if(NOT EXISTS "${CHECK_DONE_FILE}")
         message(STATUS "${EV_PIP_INSTALL_LOCAL_PACKAGE_NAME} not found, installing.")
+        set(PIP_INSTALL_ARGS "")
+        if(EV_PIP_INSTALL_LOCAL_FORCE)
+            list(APPEND PIP_INSTALL_ARGS --force-reinstall)
+        endif()
         execute_process(
             COMMAND
-                ${Python3_EXECUTABLE} -m pip install --force-reinstall -e .
+                ${Python3_EXECUTABLE} -m pip install ${PIP_INSTALL_ARGS} -e .
             WORKING_DIRECTORY
                 ${EV_PIP_INSTALL_LOCAL_PACKAGE_SOURCE_DIRECTORY}
             RESULTS_VARIABLE EV_RESULTS
