@@ -97,7 +97,7 @@ function(ev_create_pip_install_dist_target)
 
     if("${arg_PACKAGE_SOURCE_DIRECTORY}" STREQUAL "")
         set(arg_PACKAGE_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-        message(STATUS "ev_create_pip_install_dist_target: no PACKAGE_SOURCE_DIRECTORY provided, using: ${arg_PACKAGE_SOURCE_DIRECTORY}")
+        message(DEBUG "ev_create_pip_install_dist_target: no PACKAGE_SOURCE_DIRECTORY provided, using: ${arg_PACKAGE_SOURCE_DIRECTORY}")
     endif()
 
     set(CHECK_DONE_FILE "${CMAKE_BINARY_DIR}/${arg_PACKAGE_NAME}_pip_install_dist_installed")
@@ -155,7 +155,7 @@ function(ev_create_pip_install_local_target)
 
     if("${arg_PACKAGE_SOURCE_DIRECTORY}" STREQUAL "")
         set(arg_PACKAGE_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-        message(STATUS "ev_create_pip_install_local_target: no PACKAGE_SOURCE_DIRECTORY provided, using: ${arg_PACKAGE_SOURCE_DIRECTORY}")
+        message(DEBUG "ev_create_pip_install_local_target: no PACKAGE_SOURCE_DIRECTORY provided, using: ${arg_PACKAGE_SOURCE_DIRECTORY}")
     endif()
 
     set(TARGET_NAME "${arg_PACKAGE_NAME}_pip_install_local")
@@ -251,7 +251,7 @@ function(ev_create_python_wheel_targets)
     )
 
     set(USE_WHEELS "ON" CACHE STRING "Enable or disable the use of python wheels - if off switch to tar.gz format")
-    message(STATUS "USE_WHEELS is set to: ${USE_WHEELS}")
+    message(DEBUG "USE_WHEELS is set to: ${USE_WHEELS}")
 
     if(USE_WHEELS)
         set(PACKAGE_BUILD_COMMAND ${Python3_EXECUTABLE} -m build --wheel --outdir ${WHEEL_OUTDIR} .)
@@ -299,16 +299,16 @@ macro(ev_setup_cmake_variables_python_wheel)
     if(${PROJECT_NAME}_WHEEL_INSTALL_PREFIX STREQUAL "")
         if(NOT ${WHEEL_INSTALL_PREFIX} STREQUAL "")
             set(${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX "${WHEEL_INSTALL_PREFIX}")
-            message(STATUS "${PROJECT_NAME}_WHEEL_INSTALL_PREFIX not set, using: WHEEL_INSTALL_PREFIX=${${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX}")
+            message(DEBUG "${PROJECT_NAME}_WHEEL_INSTALL_PREFIX not set, using: WHEEL_INSTALL_PREFIX=${${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX}")
         else()
             set(${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/../dist-wheels")
-            message(STATUS "${PROJECT_NAME}_WHEEL_INSTALL_PREFIX and WHEEL_INSTALL_PREFIX not set, using default: \${CMAKE_INSTALL_PREFIX}/../dist-wheels=${${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX}")
+            message(DEBUG "${PROJECT_NAME}_WHEEL_INSTALL_PREFIX and WHEEL_INSTALL_PREFIX not set, using default: \${CMAKE_INSTALL_PREFIX}/../dist-wheels=${${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX}")
         endif()
 
         set(${PROJECT_NAME}_WHEEL_INSTALL_PREFIX "${${PROJECT_NAME}_DEFAULT_WHEEL_INSTALL_PREFIX}" CACHE PATH "Path to install python package to" FORCE)
     endif()
 
-    message(STATUS "${PROJECT_NAME}_WHEEL_INSTALL_PREFIX=${${PROJECT_NAME}_WHEEL_INSTALL_PREFIX}")
+    message(DEBUG "${PROJECT_NAME}_WHEEL_INSTALL_PREFIX=${${PROJECT_NAME}_WHEEL_INSTALL_PREFIX}")
 endmacro()
 
 function(ev_pip_install_local)
@@ -345,8 +345,16 @@ function(ev_pip_install_local)
             ${EV_PIP_INSTALL_LOCAL_PACKAGE_SOURCE_DIRECTORY}
         OUTPUT_VARIABLE
             EV_PIP_INSTALL_LOCAL_INSTALLED_PACKAGE_VERSION
+        ERROR_VARIABLE
+            EV_PIP_INSTALL_LOCAL_VERSION_ERROR
+        RESULT_VARIABLE
+            EV_PIP_INSTALL_LOCAL_VERSION_RESULT
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
+
+    if(NOT EV_PIP_INSTALL_LOCAL_VERSION_RESULT EQUAL 0)
+        message(FATAL_ERROR "Could not determine the version of ${EV_PIP_INSTALL_LOCAL_PACKAGE_NAME} in ${EV_PIP_INSTALL_LOCAL_PACKAGE_SOURCE_DIRECTORY}:\n${EV_PIP_INSTALL_LOCAL_VERSION_ERROR}")
+    endif()
 
     # keep only the last line, setuptools may print discovery output before the version
     string(REGEX REPLACE "^.*\n" ""
@@ -366,14 +374,13 @@ function(ev_pip_install_local)
                 ${Python3_EXECUTABLE} -m pip install ${PIP_INSTALL_ARGS} -e .
             WORKING_DIRECTORY
                 ${EV_PIP_INSTALL_LOCAL_PACKAGE_SOURCE_DIRECTORY}
-            RESULTS_VARIABLE EV_RESULTS
+            RESULT_VARIABLE EV_RESULT
         )
-        execute_process(
-            COMMAND
-                ${CMAKE_COMMAND} -E touch "${CHECK_DONE_FILE}"
-            RESULTS_VARIABLE EV_RESULTS
-        )
+        if(NOT EV_RESULT EQUAL 0)
+            message(FATAL_ERROR "Could not install ${EV_PIP_INSTALL_LOCAL_PACKAGE_NAME} from ${EV_PIP_INSTALL_LOCAL_PACKAGE_SOURCE_DIRECTORY}")
+        endif()
+        file(TOUCH "${CHECK_DONE_FILE}")
     endif()
 
-    message(STATUS "Using ${EV_PIP_INSTALL_LOCAL_PACKAGE_NAME} from ${CMAKE_CURRENT_SOURCE_DIR} version: ${EV_PIP_INSTALL_LOCAL_INSTALLED_PACKAGE_VERSION}")
+    message(STATUS "Using ${EV_PIP_INSTALL_LOCAL_PACKAGE_NAME} from ${EV_PIP_INSTALL_LOCAL_PACKAGE_SOURCE_DIRECTORY} version: ${EV_PIP_INSTALL_LOCAL_INSTALLED_PACKAGE_VERSION}")
 endfunction()

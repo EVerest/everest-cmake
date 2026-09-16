@@ -54,7 +54,7 @@ macro(ev_activate_python_venv)
             Interpreter
             Development
     )
-    message(STATUS "Activated python venv: Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+    message(DEBUG "Activated python venv: Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 endmacro()
 
 macro(ev_deactivate_python_venv)
@@ -67,7 +67,7 @@ macro(ev_deactivate_python_venv)
             Interpreter
             Development
     )
-    message(STATUS "Deactivated python venv: Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+    message(DEBUG "Deactivated python venv: Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
 endmacro()
 
 function(ev_is_directory_python_venv)
@@ -124,7 +124,7 @@ macro(ev_setup_python_executable)
                 Interpreter
         )
     else()
-        message(STATUS "Using python venv: ${EV_SETUP_PYTHON_EXECUTABLE_PYTHON_VENV_PATH}")
+        message(DEBUG "Using python venv: ${EV_SETUP_PYTHON_EXECUTABLE_PYTHON_VENV_PATH}")
         ev_is_directory_python_venv(
             DIRECTORY ${EV_SETUP_PYTHON_EXECUTABLE_PYTHON_VENV_PATH}
             RESULT_VAR IS_DIRECTORY_PYTHON_VENV
@@ -137,5 +137,5 @@ macro(ev_setup_python_executable)
         endif()
         ev_activate_python_venv(PATH_TO_VENV "${EV_SETUP_PYTHON_EXECUTABLE_PYTHON_VENV_PATH}")
     endif()
-    message(STATUS "Set up python executable with Python3_EXECUTABLE=${Python3_EXECUTABLE}")
+    message(DEBUG "Set up python executable with Python3_EXECUTABLE=${Python3_EXECUTABLE}")
 endmacro()
