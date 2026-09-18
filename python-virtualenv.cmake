@@ -27,6 +27,16 @@ macro(ev_create_python_venv)
     if(${EV_CREATE_PYTHON_VENV_RESULT} AND NOT ${EV_CREATE_PYTHON_VENV_RESULT} EQUAL 0)
         message(FATAL_ERROR "Could not create python venv: ${EV_CREATE_PYTHON_VENV_PATH_TO_VENV}")
     endif()
+    # venv stopped bundling setuptools with python 3.12
+    execute_process(
+        COMMAND ${EV_CREATE_PYTHON_VENV_PATH_TO_VENV}/bin/python -m pip install setuptools
+        RESULT_VARIABLE EV_CREATE_PYTHON_VENV_PIP_RESULT
+        OUTPUT_QUIET
+        ERROR_VARIABLE EV_CREATE_PYTHON_VENV_PIP_ERROR
+    )
+    if(NOT ${EV_CREATE_PYTHON_VENV_PIP_RESULT} EQUAL 0)
+        message(FATAL_ERROR "Could not install setuptools into python venv: ${EV_CREATE_PYTHON_VENV_PIP_ERROR}")
+    endif()
     message(STATUS "Created python venv: ${EV_CREATE_PYTHON_VENV_PATH_TO_VENV}")
 endmacro()
 
